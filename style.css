@@ -32,10 +32,9 @@ body {
 **********************************************/
 
 .top {
-    height: 40vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png);
+    height: 50vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 1.5), rgba(0, 0, 0, 0.35)), url(back.jpg);
     background-size: cover;
-    background-position: center;
     position: relative;
 }
 
@@ -199,8 +198,15 @@ h2 {
     margin-bottom: 15px;
 }
 
-.icome__title { color: #28B9B5; }
-.expenses__title { color: #FF5049; }
+.icome__title { 
+    color: #28B9B5;
+    border-bottom: 1px solid;;
+}
+
+.expenses__title {
+    color: #FF5049;
+    border-bottom: 1px solid;;
+}
 
 .item {
     padding: 13px;
