@@ -71,5 +71,12 @@ const controller = (function(budgetCtrl, UICtrl){
 
     }
 
+    return {
+        init: () => {
+            setupEventListeners();
+        }
+    }
+
 })(budgetController, UIController)
 
+controller.init();
