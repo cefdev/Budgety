@@ -3,7 +3,7 @@
 */
 const budgetController = (() => {
 
-    // Expense Fuction construction
+    // Expense Class
     class Expense {
         constructor(id, description, value) {
             this.id = id;
@@ -12,7 +12,7 @@ const budgetController = (() => {
         }
     }
 
-    // Income Fuction construction
+    // Income Class
     class Income {
         constructor(id, description, value) {
             this.id = id;
@@ -111,6 +111,24 @@ const UIController = (() =>{
 
         },
 
+        clearFields: () => {
+            let fields, fieldsArr;
+
+            // Get a NodeList of inputs
+            fields = document.querySelectorAll(DOMStrings.inputDescription + ", " + DOMStrings.inputValue);
+
+            // Convert the NodeList to an array
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            // Loop through each input field and clear it
+            fieldsArr.forEach(current => {
+                current.value = "";
+            });
+
+            // Set the focus back to the description field
+            fieldsArr[0].focus();
+        },
+
         getDOMStrings : () => {
             return DOMStrings;
         }
@@ -153,9 +171,12 @@ const controller = ((budgetCtrl, UICtrl) => {
         // 3. Add the item to the UI
         UICtrl.addListItem(newItem, input.type);
         
-        // 4. calculate the budget
+        // 4. Clear input fields
+        UICtrl.clearFields();
 
-        // 5. Display the budget on the UI
+        // 5. Calculate the budget
+
+        // 6. Display the budget on the UI
 
     }
 
