@@ -1,7 +1,33 @@
 /*
  * Budget Controller
 */
-const budgetController = (function(){
+const budgetController = (() => {
+
+    // Expense Fuction construction
+    let Expense = (id, description, value) => {
+        this.id = id;
+        this.description = description;
+        this.value = value;
+    }
+
+    // Income Fuction construction
+    let Income = (id, description, value) => {
+        this.id = id;
+        this.description = description;
+        this.value = value;
+    }
+
+    // Here is where we'll save incomes and expenses data
+    let data = {
+        allItems: {
+            exp: [],
+            inc: []
+        },
+        totals: {
+            exp: 0,
+            inc: 0
+        }
+    };
 
 })()
 
@@ -9,7 +35,7 @@ const budgetController = (function(){
 /*
  * User Interface Controller
 */
-const UIController = (function(){
+const UIController = (() =>{
 
     let DOMStrings = {
         inputType: ".add__type",
@@ -38,7 +64,7 @@ const UIController = (function(){
 /*
  * The Controller
 */
-const controller = (function(budgetCtrl, UICtrl){
+const controller = ((budgetCtrl, UICtrl) => {
 
     let setupEventListeners = () => {
         // Get DOMStrings from UI Controller
