@@ -70,6 +70,23 @@ const budgetController = (() => {
             return newItem;
         },
 
+        deleteItem: (type, id) => {
+            let ids, index;
+
+            // Get all (exps OR incs) items ids
+            ids = data.allItems[type].map(current => {
+                return current.id;
+            });
+
+            // Get the index of the item's id we want to delete
+            index = ids.indexOf(id);
+
+            // Delete the item based on its index
+            if (index !== -1) {
+                data.allItems[type].splice(index, 1);
+            }
+        },
+
         calculateBudget: () => {
             // Calculate total income and expenses
             calculateTotal('exp');
@@ -271,9 +288,10 @@ const controller = ((budgetCtrl, UICtrl) => {
             type = splitID[0];
 
             // Get the itemID's ID
-            ID = splitID[1];
+            ID = parseInt(splitID[1]);
              
             // 1. Delete the item from the data structure
+            budgetCtrl.deleteItem(type, ID);
 
             // 2. Delete the item from the UI
 
