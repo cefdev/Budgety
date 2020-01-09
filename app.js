@@ -173,6 +173,14 @@ const UIController = (() =>{
 
         },
 
+        deleteListItem: (selectorID) => {
+            // Get the item id's value (ex: inc-0, exp-9 ...)
+            let el = document.getElementById(selectorID);
+
+            // Delete the item from the UI
+            el.parentNode.removeChild(el);
+        },
+
         clearFields: () => {
             let fields, fieldsArr;
 
@@ -294,8 +302,10 @@ const controller = ((budgetCtrl, UICtrl) => {
             budgetCtrl.deleteItem(type, ID);
 
             // 2. Delete the item from the UI
+            UICtrl.deleteListItem(itemID);
 
             // 3. Udpate and show the new budget
+            updateBudget();
         }
     }
 
