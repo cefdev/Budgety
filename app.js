@@ -144,12 +144,11 @@ const budgetController = (() => {
             return data;
         }
     }
-
 })()
 
 
 /*
- * User Interface Controller
+ * UI Controller
 */
 const UIController = (() =>{
 
@@ -165,8 +164,38 @@ const UIController = (() =>{
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: ".container",
-        expensesPercLabel :".item__percentage"
-    }
+        expensesPercLabel :".item__percentage",
+        dateLabel: ".budget__title--month"
+    };
+
+    let formatNumber = (num, type) => {
+        let numSplit, int, dec;
+
+        num = Math.abs(num); // -1200 => 1200
+        num = num.toFixed(2); // 1200 => 1200.00
+
+        // Split the num into 2 parts
+        numSplit = num.split(".");
+
+        // The integer part
+        int = numSplit[0];
+
+        if (int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3); // 25700 => 25,700
+        }
+
+        // The Decimal part
+        dec = numSplit[1];
+
+        return (type === "exp" ? '-' : '+') + ' ' + int + "." + dec;
+    };
+
+    // to loop through Node Lists
+    let nodeListForEach = (list, callback) => {
+        for (let i = 0; i < list.length; i++) {
+            callback(list[i], i);
+        };
+    };
 
     return {
         getInput: () => {
@@ -194,7 +223,7 @@ const UIController = (() =>{
             // Replace the placeholder text with some actual data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value));
 
             // Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
@@ -228,11 +257,14 @@ const UIController = (() =>{
         },
 
         displayBudget: (obj) => {
-            
-            // Update UI ( total budget, Income, Expenses)
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMStrings.expensesLabel).textContent = obj.totalExp;
+            let type;
+
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+
+            // Update UI (total budget, total Incomes, total Expenses)
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget, type);
+            document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+            document.querySelector(DOMStrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
             
             // Udpate UI percentage
             if (obj.percentage > 0) {
@@ -245,12 +277,6 @@ const UIController = (() =>{
         displayPercentages: percentages => {
             let fields = document.querySelectorAll(DOMStrings.expensesPercLabel);
 
-            let nodeListForEach = (list, callback) => {
-                for (let i = 0; i < list.length; i++) {
-                    callback(list[i], i);
-                };
-            };
-
             nodeListForEach(fields, (current, index) => {
                 if (percentages[index] > 0) {
                     current.textContent = percentages[index] + "%";
@@ -258,6 +284,39 @@ const UIController = (() =>{
                     current.textContent = "---";
                 }
             });
+        },
+
+        displayMonth: () => {
+            let now, year, months, month;
+
+            // Get today's Date
+            now = new Date();
+
+            // All months
+            months =  ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul","Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            // Get today's month
+            month = now.getMonth();
+
+            // Get today's year
+            year = now.getFullYear();
+            
+            // Display month and year in UI
+            document.querySelector(DOMStrings.dateLabel).textContent = months[month] + " " + year;
+        },
+
+        changedType: () => {
+
+            // Get all input fields
+            let fields = document.querySelectorAll(
+                `${DOMStrings.inputType}, ${DOMStrings.inputDescription}, ${DOMStrings.inputValue}`
+            );
+
+            nodeListForEach(fields, current => {
+                current.classList.toggle("red-focus");
+            });
+
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
         },
 
         getDOMStrings : () => {
@@ -287,6 +346,10 @@ const controller = ((budgetCtrl, UICtrl) => {
         });
 
         document.querySelector(DOM.container).addEventListener("click", ctrlDeleteItem);
+
+        // Change inputs border and Submit button color based on type "inc => blue" or "exp => red"
+        document.querySelector(DOM.inputType).addEventListener("change", UICtrl.changedType);
+    
     };
 
     let updateBudget = () => {
@@ -323,6 +386,7 @@ const controller = ((budgetCtrl, UICtrl) => {
 
         // Check if the input fields aren't empty and value's input is > 0
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+
             // 2. Add the item to the budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
     
@@ -376,6 +440,7 @@ const controller = ((budgetCtrl, UICtrl) => {
     // Initial parameters
     return {
         init: () => {
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
