@@ -39,8 +39,8 @@ const budgetController = (() => {
         let sum = 0;
 
         // Loop through all exp or inc and sum their values
-        data.allItems[type].forEach((cur) => {
-            sum += cur.value;
+        data.allItems[type].forEach(current => {
+            sum += current.value;
         });
 
         // Store sum in data's totals
@@ -71,10 +71,10 @@ const budgetController = (() => {
             ID = 0;
 
             // Create new item based on 'inc' or 'exp' type
-            if ( type === "exp") {
-                newItem = new Expense(ID, des, val)
-            } else if (type === "inc") {
-                newItem = new Income(ID, des, val)
+            if (type === 'exp') {
+                newItem = new Expense(ID, des, val);
+            } else if (type === 'inc') {
+                newItem = new Income(ID, des, val);
             }
 
             // Push it into our data structure
@@ -102,6 +102,7 @@ const budgetController = (() => {
         },
 
         calculateBudget: () => {
+
             // Calculate total income and expenses
             calculateTotal('exp');
             calculateTotal('inc');
@@ -138,10 +139,6 @@ const budgetController = (() => {
                 totalExp: data.totals.exp,
                 percentage: data.percentage
             }
-        },
-
-        testing: () => {
-            return data;
         }
     }
 })()
@@ -175,11 +172,11 @@ const UIController = (() =>{
         num = num.toFixed(2); // 1200 => 1200.00
 
         // Split the num into 2 parts
-        numSplit = num.split(".");
+        numSplit = num.split('.');
 
         // The integer part
         int = numSplit[0];
-
+        
         if (int.length > 3) {
             int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3); // 25700 => 25,700
         }
@@ -187,7 +184,7 @@ const UIController = (() =>{
         // The Decimal part
         dec = numSplit[1];
 
-        return (type === "exp" ? '-' : '+') + ' ' + int + "." + dec;
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
     };
 
     // to loop through Node Lists
@@ -202,7 +199,7 @@ const UIController = (() =>{
             return {
                 type: document.querySelector(DOMStrings.inputType).value, // Will be either inc or exp
                 description: document.querySelector(DOMStrings.inputDescription).value,
-                value: parseInt(document.querySelector(DOMStrings.inputValue).value)
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
             }
         },
 
